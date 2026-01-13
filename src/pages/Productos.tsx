@@ -15,6 +15,7 @@ export default function Productos() {
   const { clienteId, setClienteId } = useCliente();
   const [clientes, setClientes] = useState<any[]>([]);
   const { perfil } = useAuthPermissions();
+  
 
   useEffect(() => {
     loadClientes();
