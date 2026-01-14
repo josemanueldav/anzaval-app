@@ -118,7 +118,7 @@ useEffect(() => {
     <div className="p-4 sm:p-6 text-white space-y-6 min-h-screen">
 
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <h1 className="text-3xl font-bold">Productos</h1>
+        <h1 className="text-3xl font-bold">Proyectos</h1>
 
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <select
