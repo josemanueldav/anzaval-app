@@ -9,6 +9,7 @@ export interface Perfil {
   nombre: string;
   rol: string;
   clientes: PerfilCliente[];
+  proyectos: string[];
 }
 interface AuthState {
   user: any | null;
@@ -24,6 +25,7 @@ interface AuthState {
   loadUserFromSession: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  
 }
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
@@ -38,6 +40,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   
   // Cargar usuario desde supabase.auth
   loadUserFromSession: async () => {
+
+    
     console.log("🔄 Cargando sesión...");
 
     const { data: { session } } = await supabase.auth.getSession();
@@ -78,6 +82,7 @@ const { data: proyectos } = await supabase
   ? {
       ...perfilBase,
       clientes: proyectos ?? [],  // clientes = [{ cliente_id }]
+      proyectos: (proyectos ?? []).map(p => p.cliente_id),
     }
   : null;
   

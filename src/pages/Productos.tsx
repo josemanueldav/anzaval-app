@@ -42,7 +42,9 @@ useEffect(() => {
   }
 
   // Usuarios normales → filtrar clientes asignados
-  const asignados = perfil?.clientes?.map(c => c.cliente_id) ?? [];
+  //const asignados = perfil?.clientes?.map(c => c.cliente_id) ?? [];
+  const asignados = perfil?.proyectos ?? [];
+
 
   const filtrados = data.filter(c => asignados.includes(c.id));
 
@@ -63,7 +65,8 @@ useEffect(() => {
   } else {
     // Si NO eligió cliente:
     if (perfil?.rol !== "admin") {
-      const asignados = perfil?.clientes?.map(c => c.cliente_id) ?? [];
+      //const asignados = perfil?.clientes?.map(c => c.cliente_id) ?? [];
+      const asignados = perfil?.proyectos ?? [];
 
       if (asignados.length === 0) {
         setProductos([]);
