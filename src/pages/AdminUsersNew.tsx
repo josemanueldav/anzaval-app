@@ -136,7 +136,7 @@ export default function AdminUsersNew() {
         rolesExtras,
         proyectosAsignados: [...new Set(data.proyectosAsignados)], // seguridad extra
       };
-
+      console.log("ENDPOINT EDGE:", endpoint);
       const res = await fetch(endpoint, {
         method: "POST",
         headers: {
