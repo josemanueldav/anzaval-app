@@ -15,10 +15,10 @@ export default function AdminUsersNew() {
   const [proyectos, setProyectos] = useState<any[]>([]);
 
   // filtros
-  //const [busqueda, setBusqueda] = useState("");
-  //const [filtroRol, setFiltroRol] = useState("");
-  //const [filtroProyecto, setFiltroProyecto] = useState("");
-  //const [filtroTipoProyecto, setFiltroTipoProyecto] = useState("");
+  const [busqueda, _setBusqueda] = useState("");
+  const [filtroRol, _setFiltroRol] = useState("");
+  const [filtroProyecto, _setFiltroProyecto] = useState("");
+  const [filtroTipoProyecto, _setFiltroTipoProyecto] = useState("");
 
   // ----------------------------------------------------------
   // CARGAR ROLES
