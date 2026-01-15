@@ -128,7 +128,7 @@ export default function AdminUsersNew() {
   : `${SUPABASE_FUNCTIONS_URL}/create-user`;
 
       const payload = {
-        usuarioId: usuarioEditar?.id ?? null,
+        userId: usuarioEditar?.id ?? null,
         nombre: data.nombre,
         email: data.email,
         password: usuarioEditar ? undefined : "Temporal123!",
