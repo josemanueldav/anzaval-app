@@ -4,6 +4,9 @@ import { supabase } from "@/lib/supabaseClient";
 import UserCard from "@/components/admin/UserCard";
 import ModalUsuario from "@/components/admin/ModalUsuario";
 
+import { SUPABASE_FUNCTIONS_URL } from "@/lib/supabaseFunctions";
+
+
 export default function AdminUsersNew() {
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -121,8 +124,8 @@ export default function AdminUsersNew() {
       const rolesExtras = data.roles.filter(r => r !== rolPrincipal);
 
       const endpoint = usuarioEditar
-        ? "/functions/v1/update-user"
-        : "/functions/v1/create-user";
+  ? `${SUPABASE_FUNCTIONS_URL}/update-user`
+  : `${SUPABASE_FUNCTIONS_URL}/create-user`;
 
       const payload = {
         usuarioId: usuarioEditar?.id ?? null,
