@@ -102,6 +102,28 @@ export default function RolesAdmin() {
     cargarRoles();
   }
 
+  const eliminarRol = async (rolId: string, nombre: string) => {
+  const ok = confirm(
+    `¿Eliminar el rol "${nombre}"?\nEsto puede afectar usuarios.`
+  );
+  if (!ok) return;
+
+  try {
+    const { error } = await supabase
+      .from("roles")
+      .delete()
+      .eq("id", rolId);
+
+    if (error) throw error;
+
+    setRoles(prev => prev.filter(r => r.id !== rolId));
+  } catch (err) {
+    console.error(err);
+    alert("No se pudo eliminar el rol");
+  }
+};
+
+
   return (
     <div className="text-white p-4">
       <h1 className="text-2xl font-bold mb-6">Administración de Roles</h1>
@@ -132,6 +154,14 @@ export default function RolesAdmin() {
             >
               Editar
             </button>
+
+            <button
+  onClick={() => eliminarRol(rol.id, rol.nombre)}
+  className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-sm"
+>
+  Eliminar
+</button>
+
           </div>
         ))}
       </div>
