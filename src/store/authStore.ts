@@ -147,7 +147,7 @@ const { data: proyectos } = await supabase
       .from("roles")
       .select("permisos ( clave )")
       //.select("id, nombre, descripcion, permisos ( clave )")
-      .eq("nombre", usuario.rol)
+      .eq("nombre", usuarioBase.rol)
       .maybeSingle();
 
     console.log("ROL DATA:", rolData);
