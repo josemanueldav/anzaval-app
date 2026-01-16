@@ -7,10 +7,26 @@ export interface PerfilCliente {
 export interface Perfil {
   id: string;
   nombre: string;
+  email: string;
   rol: string;
-  clientes: PerfilCliente[];
-  proyectos: string[];
+  //clientes: PerfilCliente[];
+  //proyectos: string[];
+  proyectos: UsuarioProyecto[];
+  
 }
+
+export interface UsuarioProyecto {
+  cliente_id: string;
+}
+
+export interface Usuario {
+  id: string;
+  nombre: string;
+  email: string;
+  rol: string;
+  proyectos: UsuarioProyecto[];
+}
+
 interface AuthState {
   user: any | null;
   perfil: Perfil | null;
@@ -65,11 +81,24 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     console.log("PERFIL:", perfil);*/
 
-     const { data: perfilBase } = await supabase
-  .from("perfiles")
-  .select("id, nombre, rol")
-  .eq("id", userId)
-  .maybeSingle();
+     //const { data: perfilBase } = await supabase
+  //.from("perfiles")
+  //.select("id, nombre, rol")
+  //.eq("id", userId)
+  //.maybeSingle();
+
+    // 1️⃣ Usuario (perfil real)
+  const { data: usuario } = await supabase
+    .from("usuarios")
+    .select("id, nombre, email, rol")
+    .eq("id", userId)
+    .maybeSingle();
+
+     if (!usuario) {
+    set({ user: session.user, perfil: null, permisos: [], loading: false });
+    return;
+  }
+  
 
       // 2. Obtener clientes asignados desde usuarios_proyectos
 const { data: proyectos } = await supabase
@@ -78,13 +107,18 @@ const { data: proyectos } = await supabase
   .eq("usuario_id", userId)
   .eq("activo", true);
 
-  const perfil = perfilBase
-  ? {
-      ...perfilBase,
-      clientes: proyectos ?? [],  // clientes = [{ cliente_id }]
-      proyectos: (proyectos ?? []).map(p => p.cliente_id),
-    }
-  : null;
+   const perfil = {
+    ...usuario,
+    proyectos: proyectos ?? [],
+  };
+
+  //const perfil = perfilBase
+  //? {
+      //...perfilBase,
+      //clientes: proyectos ?? [],  // clientes = [{ cliente_id }]
+      //proyectos: (proyectos ?? []).map(p => p.cliente_id),
+    //}
+  //: null;
   
     if (!perfil) {
       // Usuario sin perfil → usuario limitado
@@ -100,8 +134,9 @@ const { data: proyectos } = await supabase
     // 2. Obtener permisos desde roles → permisos
     const { data: rolData } = await supabase
       .from("roles")
-      .select("id, nombre, descripcion, permisos ( clave )")
-      .eq("nombre", perfil.rol)
+      .select("permisos ( clave )")
+      //.select("id, nombre, descripcion, permisos ( clave )")
+      .eq("nombre", usuario.rol)
       .maybeSingle();
 
     console.log("ROL DATA:", rolData);
