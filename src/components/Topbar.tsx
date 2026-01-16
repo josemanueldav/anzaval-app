@@ -7,7 +7,8 @@ import InstallPWAButton from "@/components/InstallPWAButton";
 import { Sun, Moon } from "lucide-react";
 //import UserIndicator from "@components/UserIndicator";
 //import UserMenu from "@components/UserMenu";
-import { useAuth } from "@/context/AuthContext";
+//import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from "@/store/authStore";
 //import { ROLE_LABELS } from "@/lib/roleLabels";
 //import { useAuthPermissions } from "@/hooks/useAuthPermissions";
 //import { hasPermission } from "@/utils/permissions";
@@ -25,7 +26,7 @@ export default function Topbar({
 }: TopbarProps) {
   const { theme, toggleTheme } = useTheme();
   
- const { user, loading } = useAuth();
+ const { user, loading } = useAuthStore();
 
 if (loading || !user) return null;
 
@@ -46,6 +47,7 @@ const initials = displayName
 //const { permisos, loading: loadingPermisos } = useAuthPermissions();
 
 //if (loadingPermisos) return null;
+if (loading) return null;
 
   return (
     
