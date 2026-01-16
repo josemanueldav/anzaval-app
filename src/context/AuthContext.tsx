@@ -25,28 +25,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   async function loadUserData(userId: string) {
+  try {
+    console.log("👤 Cargando usuario:", userId);
+
     const { data: usuario, error } = await supabase
       .from("usuarios")
       .select("id, email, nombre, rol")
       .eq("id", userId)
       .single();
 
-    if (error || !usuario) {
+    if (error) {
+      console.error("❌ Error usuarios:", error);
       setPerfil(null);
       return;
     }
 
-    const { data: proyectosAsignados } = await supabase
+    const { data: proyectosAsignados, error: errProyectos } = await supabase
       .from("usuarios_proyectos")
       .select("cliente_id")
       .eq("usuario_id", userId)
       .eq("activo", true);
 
+    if (errProyectos) {
+      console.error("❌ Error proyectos:", errProyectos);
+    }
+
     setPerfil({
       ...usuario,
       proyectos: proyectosAsignados?.map(p => p.cliente_id) ?? []
     });
+
+    console.log("✅ Perfil cargado");
+  } catch (e) {
+    console.error("🔥 Error crítico loadUserData:", e);
+    setPerfil(null);
   }
+}
+
 
   async function refreshSession() {
     const { data } = await supabase.auth.getUser();
@@ -64,16 +79,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let mounted = true;
 
     async function init() {
-      const { data } = await supabase.auth.getSession();
-      const session = data.session;
+  try {
+    console.log("🔄 Cargando sesión inicial...");
 
-      if (session?.user && mounted) {
-        setUser(session.user);
-        await loadUserData(session.user.id);
-      }
+    const { data } = await supabase.auth.getSession();
+    const session = data.session;
 
-      if (mounted) setLoading(false);
+    if (session?.user) {
+      setUser(session.user);
+      await loadUserData(session.user.id);
+    } else {
+      setUser(null);
+      setPerfil(null);
     }
+  } catch (e) {
+    console.error("🔥 Error init auth:", e);
+    setUser(null);
+    setPerfil(null);
+  } finally {
+    console.log("✅ Auth listo");
+    setLoading(false);
+  }
+}
+
 
     init();
 
