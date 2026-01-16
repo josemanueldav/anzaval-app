@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 import ProductListTable from "@/components/product/ProductListTable";  // integración
 import { useAuthPermissions } from "@/hooks/useAuthPermissions";
 import { useCliente } from "@/context/ClienteContext";
+import type { PerfilCliente } from "@/store/authStore";
 //import { ClienteProvider } from "@/context/ClienteContext";
 
 export default function Productos() {
@@ -11,20 +12,30 @@ export default function Productos() {
 
   const [productos, setProductos] = useState<any[]>([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+  
   const { clienteId, setClienteId } = useCliente();
   const [clientes, setClientes] = useState<any[]>([]);
-  const { perfil } = useAuthPermissions();
+  const { perfil, loading: authLoading } = useAuthPermissions();
+  const [loading, setLoading] = useState(false);
+  
+  
   
 
   useEffect(() => {
-    loadClientes();
-  }, []);
-useEffect(() => {
-    loadProductos();
-  }, [clienteId]);
+  if (authLoading) return;
+  if (!perfil) return;
 
-  const loadClientes = async () => {
+  loadClientes();
+}, [authLoading, perfil]);
+
+useEffect(() => {
+  if (authLoading) return;
+  if (!perfil) return;
+
+  loadProductos();
+}, [clienteId, authLoading, perfil]);
+
+const loadClientes = async () => {
   const { data, error } = await supabase
     .from("clientes")
     .select("id, nombre")
@@ -35,75 +46,76 @@ useEffect(() => {
     return;
   }
 
-  // Si es admin → ver todos
+  // Admin → todos
   if (perfil?.rol === "admin") {
     setClientes(data);
     return;
   }
 
-  // Usuarios normales → filtrar clientes asignados
-  //const asignados = perfil?.clientes?.map(c => c.cliente_id) ?? [];
-  const asignados = perfil?.proyectos ?? [];
+  // Usuarios normales → SOLO clientes asignados
+  const asignados =
+    perfil?.clientes?.map((c: PerfilCliente) => c.cliente_id) ?? [];
 
-
-  const filtrados = data.filter(c => asignados.includes(c.id));
+  const filtrados = data.filter(c =>
+    asignados.includes(c.id)
+  );
 
   setClientes(filtrados);
 };
 
+
   const loadProductos = async () => {
-    setLoading(true);
+  if (!perfil) return;
 
-    let query = supabase
-      .from("productos")
-      .select("*")
-      .order("created_at", { ascending: false });
+  setLoading(true);
 
-  // Si eligió cliente manualmente → respetar filtro
+  let query = supabase
+    .from("productos")
+    .select("*")
+    .order("created_at", { ascending: false });
+
   if (clienteId) {
     query = query.eq("cliente_id", clienteId);
-  } else {
-    // Si NO eligió cliente:
-    if (perfil?.rol !== "admin") {
-      //const asignados = perfil?.clientes?.map(c => c.cliente_id) ?? [];
-      const asignados = perfil?.proyectos ?? [];
+  } else if (perfil.rol !== "admin") {
+    const asignados =
+      perfil?.clientes?.map((c: PerfilCliente) => c.cliente_id) ?? [];
 
-      if (asignados.length === 0) {
-        setProductos([]);
-        setLoading(false);
-        return;
-      }
-
-      query = query.in("cliente_id", asignados);
-    }
-  }
-
-
-    const { data: rows, error } = await query;
-
-    if (!rows || error) {
+    if (asignados.length === 0) {
       setProductos([]);
       setLoading(false);
       return;
     }
 
-    const { data: imgs } = await supabase
-      .from("productos_imagenes")
-      .select("id, producto_id");
+    query = query.in("cliente_id", asignados);
+  }
 
-    const countMap: Record<string, number> = {};
-    imgs?.forEach((i) => {
-      countMap[i.producto_id] = (countMap[i.producto_id] ?? 0) + 1;
-    });
+  const { data: rows, error } = await query;
 
-    const enriched = rows.map((p) => ({
+  if (error || !rows) {
+    setProductos([]);
+    setLoading(false);
+    return;
+  }
+
+  const { data: imgs } = await supabase
+    .from("productos_imagenes")
+    .select("producto_id");
+
+  const countMap: Record<string, number> = {};
+  imgs?.forEach(i => {
+    countMap[i.producto_id] = (countMap[i.producto_id] ?? 0) + 1;
+  });
+
+  setProductos(
+    rows.map(p => ({
       ...p,
       imagenes: countMap[p.id] ?? 0,
-    }));
+    }))
+  );
 
-    setProductos(enriched);
-    setLoading(false);
-  };
+  setLoading(false);
+};
+
 
   const filtered = productos.filter((p) => {
     if (!search.trim()) return true;

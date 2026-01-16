@@ -9,10 +9,10 @@ export interface Perfil {
   nombre: string;
   email: string;
   rol: string;
-  //clientes: PerfilCliente[];
+  clientes: PerfilCliente[];
   //proyectos: string[];
   //proyectos: UsuarioProyecto[];
-  proyectos: { cliente_id: string }[];
+  //proyectos: { cliente_id: string }[];
   
 }
 
@@ -118,10 +118,13 @@ const { data: proyectos } = await supabase
   .eq("usuario_id", userId)
   .eq("activo", true);
 
-   const perfil = {
-    ...usuarioBase,
-    proyectos: proyectos ?? [],
-  };
+  const perfil: Perfil = {
+  id: usuarioBase.id,
+  nombre: usuarioBase.nombre,
+  email: usuarioBase.email,
+  rol: usuarioBase.rol,
+  clientes: proyectos ?? [], // ← [{ cliente_id }]
+};
 
   //const perfil = perfilBase
   //? {
