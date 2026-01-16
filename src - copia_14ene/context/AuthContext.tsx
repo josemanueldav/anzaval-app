@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
+
 interface UserProfile {
   id: string;
   email: string;
-  nombre?:   string;
+  nombre?: string;
   rol?: string;
   proyectos: string[];
 }
@@ -24,22 +25,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [perfil, setPerfil] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Obtiene el perfil desde perfiles
-  async function loadPerfil(id: string) {
-    const { data, error } = await supabase
-      .from("perfiles")
-      .select("id, email, nombre, rol, proyectos")
-      .eq("id", id)
+  async function loadUserData(userId: string) {
+    const { data: usuario, error } = await supabase
+      .from("usuarios")
+      .select("id, email, nombre, rol")
+      .eq("id", userId)
       .single();
 
-    if (!error && data) setPerfil(data);
+    if (error || !usuario) {
+      setPerfil(null);
+      return;
+    }
+
+    const { data: proyectosAsignados } = await supabase
+      .from("usuarios_proyectos")
+      .select("cliente_id")
+      .eq("usuario_id", userId)
+      .eq("activo", true);
+
+    setPerfil({
+      ...usuario,
+      proyectos: proyectosAsignados?.map(p => p.cliente_id) ?? []
+    });
   }
 
-  // Refresca manualmente (para cambios de rol o perfil)
   async function refreshSession() {
     const { data } = await supabase.auth.getUser();
     setUser(data.user);
-    if (data.user) await loadPerfil(data.user.id);
+    if (data.user) await loadUserData(data.user.id);
   }
 
   async function signOut() {
@@ -48,95 +61,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setPerfil(null);
   }
 
-  // Al cargar la app
   useEffect(() => {
-  let mounted = true;
+    let mounted = true;
 
-  async function init() {
-    console.log("🔄 Cargando sesión inicial...");
+    async function init() {
+      const { data } = await supabase.auth.getSession();
+      const session = data.session;
 
-    const { data: sessionData } = await supabase.auth.getSession();
-    const session = sessionData.session;
-
-    if (session?.user) {
-
-      // Cargar perfil
-      const { data: perfilData } = await supabase
-        .from("perfiles")
-        .select("*")
-        .eq("id", session.user.id)
-        .single();
-
-      // Cargar roles/permisos si los usas desde tabla separada
-      // (ya lo tienes implementado arriba, solo dejo el espacio)
-      // ...
-
-      // Cargar proyectos asignados
-      const { data: proyectosAsignados } = await supabase
-        .from("usuarios_proyectos")
-        .select("cliente_id")
-        .eq("usuario_id", session.user.id)
-        .eq("activo", true);
-
-      if (mounted) {
+      if (session?.user && mounted) {
         setUser(session.user);
-
-        // Aquí corregimos TS: prev puede ser null
-        setPerfil(prev => prev ? {
-          ...prev,
-          ...perfilData,
-          proyectos: proyectosAsignados?.map(p => p.cliente_id) ?? []
-        } : {
-          ...perfilData,
-          proyectos: proyectosAsignados?.map(p => p.cliente_id) ?? []
-        });
+        await loadUserData(session.user.id);
       }
+
+      if (mounted) setLoading(false);
     }
 
-    if (mounted) setLoading(false);
-  }
+    init();
 
-  init();
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        if (!mounted) return;
 
-  // Mantener sesión en tiempo real
-  const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
-    (async () => {
-      if (session?.user) {
-        const { data: perfilData } = await supabase
-          .from("perfiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single();
+        if (session?.user) {
+          setUser(session.user);
+          await loadUserData(session.user.id);
+        } else {
+          setUser(null);
+          setPerfil(null);
+        }
 
-        const { data: proyectosAsignados } = await supabase
-          .from("usuarios_proyectos")
-          .select("cliente_id")
-          .eq("usuario_id", session.user.id)
-          .eq("activo", true);
-
-        setUser(session.user);
-        setPerfil({
-          ...perfilData,
-          proyectos: proyectosAsignados?.map(p => p.cliente_id) ?? []
-        });
-      } else {
-        setUser(null);
-        setPerfil(null);
+        setLoading(false);
       }
-      setLoading(false);
-    })();
-  });
+    );
 
-  return () => {
-    mounted = false;
-    listener?.subscription.unsubscribe();
-  };
-}, []);
-
-
+    return () => {
+      mounted = false;
+      listener?.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, perfil, loading, signOut, refreshSession }}>
+    <AuthContext.Provider
+      value={{ user, perfil, loading, signOut, refreshSession }}
+    >
       {children}
     </AuthContext.Provider>
   );
