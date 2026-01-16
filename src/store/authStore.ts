@@ -11,7 +11,8 @@ export interface Perfil {
   rol: string;
   //clientes: PerfilCliente[];
   //proyectos: string[];
-  proyectos: UsuarioProyecto[];
+  //proyectos: UsuarioProyecto[];
+  proyectos: { cliente_id: string }[];
   
 }
 
@@ -88,16 +89,26 @@ export const useAuthStore = create<AuthState>((set) => ({
   //.maybeSingle();
 
     // 1️⃣ Usuario (perfil real)
-  const { data: usuario } = await supabase
+  //const { data: usuario } = await supabase
+  const { data: usuarioBase, error: usuarioError } = await supabase
     .from("usuarios")
     .select("id, nombre, email, rol")
     .eq("id", userId)
     .maybeSingle();
 
-     if (!usuario) {
-    set({ user: session.user, perfil: null, permisos: [], loading: false });
-    return;
-  }
+     //if (!usuario) {
+    //set({ user: session.user, perfil: null, permisos: [], loading: false });
+    //return;
+  //}
+  if (usuarioError || !usuarioBase) {
+  set({
+    user: session.user,
+    perfil: null,
+    permisos: [],
+    loading: false,
+  });
+  return;
+}
   
 
       // 2. Obtener clientes asignados desde usuarios_proyectos
@@ -108,7 +119,7 @@ const { data: proyectos } = await supabase
   .eq("activo", true);
 
    const perfil = {
-    ...usuario,
+    ...usuarioBase,
     proyectos: proyectos ?? [],
   };
 
