@@ -161,6 +161,47 @@ export default function AdminUsersNew() {
     }
   };
 
+  const eliminarUsuario = async () => {
+  if (!usuarioEditar) return;
+
+  const ok = confirm(
+    `¿Eliminar definitivamente al usuario ${usuarioEditar.email}?`
+  );
+  if (!ok) return;
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    const res = await fetch("/functions/v1/delete-user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+      body: JSON.stringify({
+        userId: usuarioEditar.id,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw err;
+    }
+
+    setUsuarios(prev =>
+      prev.filter(u => u.id !== usuarioEditar.id)
+    );
+
+    setModalOpen(false);
+    setUsuarioEditar(null);
+
+  } catch (err) {
+    console.error("Error eliminando usuario:", err);
+    alert("No se pudo eliminar el usuario");
+  }
+};
+
+
   // ----------------------------------------------------------
   // FILTROS
   // ----------------------------------------------------------
@@ -241,6 +282,7 @@ export default function AdminUsersNew() {
         rolesDisponibles={rolesDisponibles}
         proyectos={proyectos}
         onSave={guardarUsuario}
+        onDelete={eliminarUsuario}
       />
     </div>
   );

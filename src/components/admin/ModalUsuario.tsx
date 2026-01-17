@@ -5,6 +5,7 @@ interface ModalUsuarioProps {
   open: boolean;
   onClose: () => void;
   onSave: (data: any) => void;
+  onDelete?: () => void;
   usuario?: any; // si existe, es edición
   rolesDisponibles: string[];
   proyectos: any[];
@@ -14,6 +15,7 @@ export default function ModalUsuario({
   open,
   onClose,
   onSave,
+  onDelete,
   usuario,
   rolesDisponibles,
   proyectos,
@@ -158,6 +160,15 @@ export default function ModalUsuario({
           >
             Guardar
           </button>
+          {usuario && (
+  <button
+    type="button"
+    onClick={onDelete}
+    className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white"
+  >
+    🗑 Eliminar usuario
+  </button>
+)}
         </div>
 
       </div>
