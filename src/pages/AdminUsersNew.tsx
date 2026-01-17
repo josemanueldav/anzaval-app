@@ -173,7 +173,7 @@ export default function AdminUsersNew() {
   try {
     const { data: { session } } = await supabase.auth.getSession();
 
-    const res = await fetch("${SUPABASE_FUNCTIONS_URL}/delete-user", {
+    const res = await fetch("https://rpsaenclfsklfjslzybx.supabase.co/functions/v1/delete-user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
