@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Modal from "@/components/ui/Modal";
 
 interface ModalUsuarioProps {
-  open: boolean;
+  open: boolean; 
   onClose: () => void;
   onSave: (data: any) => void;
   onDelete?: () => void;

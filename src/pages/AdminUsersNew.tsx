@@ -127,6 +127,7 @@ export default function AdminUsersNew() {
   ? `${SUPABASE_FUNCTIONS_URL}/update-user`
   : `${SUPABASE_FUNCTIONS_URL}/create-user`;
 
+
       const payload = {
         userId: usuarioEditar?.id ?? null,
         nombre: data.nombre,
@@ -172,7 +173,7 @@ export default function AdminUsersNew() {
   try {
     const { data: { session } } = await supabase.auth.getSession();
 
-    const res = await fetch("/functions/v1/delete-user", {
+    const res = await fetch("${SUPABASE_FUNCTIONS_URL}/delete-user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
