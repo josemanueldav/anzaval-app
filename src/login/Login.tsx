@@ -13,39 +13,35 @@ const Login: React.FC = () => {
     setError(null);
     setLoading(true);
 
-    // Intentar iniciar sesión
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
     if (error) {
       setError("Correo o contraseña incorrectos");
       setLoading(false);
       return;
     }
 
-    // Obtener datos del usuario actual
-    const { data: userData } = await supabase.auth.getUser();
-    const user = userData?.user;
+    // ⛔ NO redirigir aquí
+    // ⛔ NO getUser aquí
+    // ⛔ NO window.location.href
 
-    // Validar si está inactivo
-    if (user && user.user_metadata?.activo === false) {
-      setError("Tu cuenta ha sido desactivada. Contacta al administrador.");
-      await supabase.auth.signOut();
-      setLoading(false);
-      return;
-    }
-
-    // Si está activo, continuar al dashboard
-    window.location.href = "/";
+    // El authStore + ProtectedRoute + PostLoginRedirect
+    // se encargarán del resto
   };
 
   return (
     <div className="min-h-screen flex flex-col sm:flex-row bg-gradient-to-br from-blue-900 to-gray-900 text-white">
-      {/* ==== Columna izquierda: Formulario ==== */}
       <div className="flex flex-1 items-center justify-center px-6 py-8 sm:py-0">
         <form
           onSubmit={handleLogin}
           className="w-full max-w-sm bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg p-6 sm:p-8 text-white"
         >
-          <h2 className="text-2xl font-semibold text-center mb-6">Iniciar Sesión</h2>
+          <h2 className="text-2xl font-semibold text-center mb-6">
+            Iniciar Sesión
+          </h2>
 
           {error && (
             <div className="mb-4 text-red-400 text-sm bg-red-900/40 p-2 rounded-lg text-center">
@@ -82,12 +78,11 @@ const Login: React.FC = () => {
           </button>
 
           <p className="text-gray-400 text-xs text-center mt-6 opacity-70 select-none">
-            © {new Date().getFullYear()} MCVE · Acceso Seguro
+            © {new Date().getFullYear()} Anzaval · Acceso Seguro
           </p>
         </form>
       </div>
 
-      {/* ==== Columna derecha: Imagen y branding ==== */}
       <div
         className="hidden sm:flex flex-1 items-center justify-center relative overflow-hidden"
         style={{
@@ -104,7 +99,9 @@ const Login: React.FC = () => {
             alt="Anzaval Logo"
             className="mx-auto mb-4 w-24 h-24 object-contain"
           />
-          <h1 className="text-3xl font-bold tracking-wide">Anzaval Consulting</h1>
+          <h1 className="text-3xl font-bold tracking-wide">
+            Anzaval Consulting
+          </h1>
           <p className="text-blue-300 mt-2 text-sm uppercase tracking-wider">
             Sistema de Inventarios
           </p>
