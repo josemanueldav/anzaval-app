@@ -23,7 +23,7 @@ export default function AdminAsignaciones() {
   useEffect(() => {
     const fetchData = async () => {
       const { data: users } = await supabase
-        .from("usuarios_demo")
+        .from("usuarios")
         .select("id, nombre"); // o auth.users: id, email
 
       const usuariosMap = (users || []).map((u: any) => ({

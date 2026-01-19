@@ -92,7 +92,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   //const { data: usuario } = await supabase
   const { data: usuarioBase, error: usuarioError } = await supabase
     .from("usuarios")
-    .select("id, nombre, email, rol")
+    .select("id, nombre, email, rol, activo")
     .eq("id", userId)
     .maybeSingle();
 
@@ -108,6 +108,20 @@ export const useAuthStore = create<AuthState>((set) => ({
     loading: false,
   });
   return;
+}
+
+// ⛔ VALIDACIÓN CRÍTICA
+if (!usuarioBase.activo) {
+  await supabase.auth.signOut();
+
+  set({
+    user: null,
+    perfil: null,
+    permisos: [],
+    loading: false,
+  });
+
+  throw new Error("Usuario deshabilitado");
 }
   
 
@@ -179,6 +193,7 @@ const { data: proyectos } = await supabase
     if (error) throw error;
 
     await (useAuthStore.getState().loadUserFromSession());
+
   },
 
   // Logout

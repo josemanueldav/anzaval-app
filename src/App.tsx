@@ -4,7 +4,8 @@ import { supabase } from "./lib/supabaseClient";
 
 import Layout from "@/layouts/Layout";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import HomeRedirect from "@/components/HomeRedirect";
+//import HomeRedirect from "@/components/HomeRedirect";
+import PostLoginRedirect from "@/routes/PostLoginRedirect";
 // Páginas
 import Login from "./login/Login";
 import Dashboard from "@/pages/AdminDashboard";
@@ -61,14 +62,14 @@ function App() {
           <Route element={<Layout />}>
 
              {/* Ruta raíz */}
-             <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <HomeRedirect />
-            </ProtectedRoute>
-          }
-        />
+            <Route
+  path="/"
+  element={
+    <ProtectedRoute>
+      <PostLoginRedirect />
+    </ProtectedRoute>
+  }
+/>
           
             {/* Dashboard */}
             <Route

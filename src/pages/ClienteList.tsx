@@ -74,9 +74,9 @@ export default function ClienteList() {
       </div>
 
       {loading ? (
-        <p className="text-gray-300">Cargando clientes...</p>
+        <p className="text-gray-300">Cargando proyectos...</p>
       ) : clientes.length === 0 ? (
-        <p className="text-gray-400">No hay clientes registrados.</p>
+        <p className="text-gray-400">No hay proyectos registrados.</p>
       ) : (
         <>
           {/* 💻 Vista en escritorio */}

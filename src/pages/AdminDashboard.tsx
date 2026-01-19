@@ -136,7 +136,7 @@ export default function AdminDashboard() {
     const source = getSource(subset);
 
     if (!source.length) {
-      alert("No hay productos para exportar.");
+      alert("No hay activos para exportar.");
       return;
     }
 
@@ -181,7 +181,7 @@ export default function AdminDashboard() {
     const source = getSource(subset);
 
     if (!source.length) {
-      alert("No hay productos para exportar.");
+      alert("No hay activos para exportar.");
       return;
     }
 
@@ -270,7 +270,7 @@ export default function AdminDashboard() {
   const handleExportResumenPorProyectoExcel = async (subset?: Producto[]) => {
     const source = getSource(subset);
     if (!source.length) {
-      alert("No hay productos para exportar.");
+      alert("No hay activos para exportar.");
       return;
     }
 
@@ -357,7 +357,7 @@ export default function AdminDashboard() {
   const handleExportResumenPorProyectoPDF = async (subset?: Producto[]) => {
     const source = getSource(subset);
     if (!source.length) {
-      alert("No hay productos para exportar.");
+      alert("No hay activos para exportar.");
       return;
     }
 
@@ -418,7 +418,7 @@ export default function AdminDashboard() {
     const source = getSource(subset);
 
     if (!source.length) {
-      alert("No hay productos para generar reportes.");
+      alert("No hay activos para generar reportes.");
       return;
     }
 
@@ -587,7 +587,7 @@ export default function AdminDashboard() {
       );
 
     if (!datos.length) {
-      alert("No hay productos que coincidan con los filtros del reporte.");
+      alert("No hay activos que coincidan con los filtros del reporte.");
       return;
     }
 

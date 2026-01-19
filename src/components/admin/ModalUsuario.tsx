@@ -166,7 +166,7 @@ export default function ModalUsuario({
     onClick={onDelete}
     className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white"
   >
-    🗑 Eliminar usuario
+    🗑 Desactivar usuario
   </button>
 )}
         </div>

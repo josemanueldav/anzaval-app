@@ -23,7 +23,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       >
         <nav className="space-y-4">
           <Link to="/" className="block text-gray-700 hover:text-blue-600">Dashboard</Link>
-          <Link to="/productos" className="block text-gray-700 hover:text-blue-600">Productos</Link>
+          <Link to="/productos" className="block text-gray-700 hover:text-blue-600">Activos</Link>
           <Link to="/usuarios" className="block text-gray-700 hover:text-blue-600">Usuarios</Link>
           <Link to="/reportes" className="block text-gray-700 hover:text-blue-600">Reportes</Link>
         </nav>

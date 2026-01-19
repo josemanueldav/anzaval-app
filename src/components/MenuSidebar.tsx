@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useAuthPermissions } from "@/hooks/useAuthPermissions";
 import { hasPermission } from "@/utils/permissions";
 import { menuItems } from "@/config/menu";
+import { logout } from "@/login/Logout";
 
 export default function MenuSidebar({
   collapsed,
@@ -86,6 +87,17 @@ export default function MenuSidebar({
               </NavLink>
             );
           })}
+
+          <button
+  onClick={logout}
+  className="
+    w-full text-left px-4 py-3
+    text-red-500
+    hover:bg-white/10
+  "
+>
+  Cerrar sesión
+</button>
         </nav>
       </aside>
     </>

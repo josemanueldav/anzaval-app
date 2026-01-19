@@ -104,7 +104,7 @@ export default function Navbar() {
               className="block hover:text-blue-400 transition"
               onClick={() => setIsOpen(false)}
             >
-              📦 Productos
+              📦 Activos
             </Link>
             <Link
               to="/clientes"

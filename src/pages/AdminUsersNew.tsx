@@ -65,6 +65,7 @@ export default function AdminUsersNew() {
             cliente_id,
             activo
           )
+          .eq("activo", true)
         `);
 
       if (error || !usuariosBase) {
@@ -163,44 +164,33 @@ export default function AdminUsersNew() {
   };
 
   const eliminarUsuario = async () => {
-  if (!usuarioEditar) return;
+  if (!confirm("¿Deseas desactivar este usuario?")) return;
 
-  const ok = confirm(
-    `¿Eliminar definitivamente al usuario ${usuarioEditar.email}?`
-  );
-  if (!ok) return;
-
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    const res = await fetch("https://rpsaenclfsklfjslzybx.supabase.co/functions/v1/delete-user", {
+  const res = await fetch(
+    "https://rpsaenclfsklfjslzybx.supabase.co/functions/v1/delete-user",
+    {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.access_token}`,
+        Authorization: `Bearer ${
+          (await supabase.auth.getSession()).data.session?.access_token
+        }`,
       },
-      body: JSON.stringify({
-        userId: usuarioEditar.id,
-      }),
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw err;
+      body: JSON.stringify({ userId: usuarioEditar.id }),
     }
+  );
 
-    setUsuarios(prev =>
-      prev.filter(u => u.id !== usuarioEditar.id)
-    );
+  const data = await res.json();
 
-    setModalOpen(false);
-    setUsuarioEditar(null);
-
-  } catch (err) {
-    console.error("Error eliminando usuario:", err);
-    alert("No se pudo eliminar el usuario");
+  if (!res.ok) {
+    alert(data.error || "Error desactivando usuario");
+    return;
   }
+
+  alert("Usuario desactivado correctamente");
+  //onClose();
 };
+
 
 
   // ----------------------------------------------------------

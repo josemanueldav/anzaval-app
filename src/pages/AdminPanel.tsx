@@ -29,7 +29,7 @@ export default function AdminPanel() {
       onClick: () => nav("/admin/asignaciones"),
     },
     {
-      label: "Clientes",
+      label: "Proyectos",
       description: "Crear y editar proyectos",
       permission: "gestionar_clientes",
       icon: "🏢",
