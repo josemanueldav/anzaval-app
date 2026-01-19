@@ -45,7 +45,7 @@ interface AuthState {
   logout: () => Promise<void>;
   
 }
-let authListenerInitialized = false;
+//let authListenerInitialized = false;
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
