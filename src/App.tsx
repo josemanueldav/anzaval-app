@@ -25,9 +25,18 @@ function App() {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const initAuthListener = useAuthStore((s) => s.initAuthListener);
+  const loadUserFromSession = useAuthStore((s) => s.loadUserFromSession);
+
+
   useEffect(() => {
   useAuthStore.getState().loadUserFromSession();
 }, []);
+
+ useEffect(() => {
+    initAuthListener();
+    loadUserFromSession();
+  }, []);
 
 
   useEffect(() => {

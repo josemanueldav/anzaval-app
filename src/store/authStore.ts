@@ -40,11 +40,14 @@ interface AuthState {
   setLoading: (loading: boolean) => void;
 
   loadUserFromSession: () => Promise<void>;
+  initAuthListener: () => void; // ⬅️ NUEVO
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   
 }
-export const useAuthStore = create<AuthState>((set) => ({
+let authListenerInitialized = false;
+
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   permisos: [],
   perfil: null,
@@ -54,6 +57,25 @@ export const useAuthStore = create<AuthState>((set) => ({
   setPermisos: (permisos) => set({ permisos }),
   setPerfil: (perfil) => set({ perfil }),
   setLoading: (loading) => set({ loading }),
+
+  initAuthListener: () => {
+    supabase.auth.onAuthStateChange((event) => {
+      console.log("🔐 AUTH EVENT:", event);
+
+      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        get().loadUserFromSession();
+      }
+
+      if (event === "SIGNED_OUT") {
+        set({
+          user: null,
+          perfil: null,
+          permisos: [],
+          loading: false,
+        });
+      }
+    });
+  },
   
   // Cargar usuario desde supabase.auth
   loadUserFromSession: async () => {
@@ -192,7 +214,7 @@ const { data: proyectos } = await supabase
 
     if (error) throw error;
 
-    await (useAuthStore.getState().loadUserFromSession());
+    //await (useAuthStore.getState().loadUserFromSession());
 
   },
 
