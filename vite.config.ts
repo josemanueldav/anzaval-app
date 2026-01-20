@@ -15,7 +15,7 @@ export default defineConfig({
       maximumFileSizeToCacheInBytes: 10 * 1024 * 1024 // 10 MB
       },
       devOptions: {
-        enabled: true, // permite probar PWA en modo dev
+        enabled: false, // permite probar PWA en modo dev
       },
       includeAssets: [
         "favicon.ico",

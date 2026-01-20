@@ -12,6 +12,8 @@ import { useAuthStore } from "@/store/authStore";
 //import { ROLE_LABELS } from "@/lib/roleLabels";
 //import { useAuthPermissions } from "@/hooks/useAuthPermissions";
 //import { hasPermission } from "@/utils/permissions";
+import { isIOS } from "@/utils/isIOS";
+import { usePWAStatus } from "@/hooks/usePWAStatus";
 
 
 
@@ -151,3 +153,16 @@ if (loading) return null;
   );
 }
 
+export function IOSInstallHint() {
+  const { isInstalled } = usePWAStatus();
+
+  if (!isIOS() || isInstalled) return null;
+
+  return (
+    <div className="text-xs text-white/80 px-3 py-2 bg-blue-900/40 rounded-md">
+      Para instalar la app:
+      <br />
+      <strong>Compartir → Agregar a pantalla de inicio</strong>
+    </div>
+  );
+}

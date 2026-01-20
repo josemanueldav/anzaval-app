@@ -20,6 +20,7 @@ import UiGuide from "@/pages/UiGuide";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuthStore } from "@/store/authStore";
 import PWAModal from "@/components/PWAModal";
+import ResetPassword from "@/pages/ResetPassword";
 
 function App() {
   const [session, setSession] = useState<any>(null);
@@ -166,6 +167,9 @@ function App() {
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Route>
           <Route path="/ui-guide" element={<UiGuide />} />
+
+          <Route path="/reset-password" element={<ResetPassword />} />
+
 
         </Routes>
       )}

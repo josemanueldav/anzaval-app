@@ -98,6 +98,7 @@ export default function MenuSidebar({
 >
   Cerrar sesión
 </button>
+
         </nav>
       </aside>
     </>

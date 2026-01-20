@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { usePWAStatus } from "../hooks/usePWAStatus";
+import { usePWAStatus } from "@/hooks/usePWAStatus";
 
 export default function InstallPWAButton() {
   const [deferredPrompt, setDeferredPrompt] =
@@ -10,9 +10,11 @@ export default function InstallPWAButton() {
 
   useEffect(() => {
     const handler = (e: Event) => {
-      console.log("🔥 beforeinstallprompt disparado");
+      console.log("📦 beforeinstallprompt disparado");
+
       const event = e as BeforeInstallPromptEvent;
       event.preventDefault();
+
       setDeferredPrompt(event);
       setCanInstall(true);
     };
@@ -27,25 +29,29 @@ export default function InstallPWAButton() {
   const installApp = async () => {
     if (!deferredPrompt) return;
 
-    await deferredPrompt.prompt();
+    deferredPrompt.prompt();
     const result = await deferredPrompt.userChoice;
 
-    console.log("Instalación:", result.outcome);
+    console.log("📲 Resultado instalación:", result.outcome);
 
     setDeferredPrompt(null);
     setCanInstall(false);
   };
 
-  // Ya instalada → NO mostrar botón
+  // Ya instalada → no mostrar
   if (isInstalled) return null;
 
-  // No es instalable → NO mostrar botón
+  // No instalable (Android/Chrome no disparó evento)
   if (!canInstall) return null;
 
   return (
     <button
       onClick={installApp}
-      className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md"
+      className="
+        bg-blue-600 hover:bg-blue-700
+        text-white px-3 py-1.5 rounded-md
+        text-sm font-medium shadow
+      "
     >
       Instalar App
     </button>

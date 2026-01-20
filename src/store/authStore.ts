@@ -10,6 +10,7 @@ export interface Perfil {
   email: string;
   rol: string;
   clientes: PerfilCliente[];
+  passwordTemporal?: boolean;
   //proyectos: string[];
   //proyectos: UsuarioProyecto[];
   //proyectos: { cliente_id: string }[];
@@ -114,7 +115,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   //const { data: usuario } = await supabase
   const { data: usuarioBase, error: usuarioError } = await supabase
     .from("usuarios")
-    .select("id, nombre, email, rol, activo")
+    .select("id, nombre, email, rol, activo, password_temporal")
     .eq("id", userId)
     .maybeSingle();
 
@@ -160,6 +161,7 @@ const { data: proyectos } = await supabase
   email: usuarioBase.email,
   rol: usuarioBase.rol,
   clientes: proyectos ?? [], // ← [{ cliente_id }]
+  passwordTemporal: usuarioBase.password_temporal,
 };
 
   //const perfil = perfilBase

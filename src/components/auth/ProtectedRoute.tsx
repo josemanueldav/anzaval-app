@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, requiredPermission }: ProtectedRouteProps) {
-  const { user, permisos, loading } = useAuthStore();
+  const { user, perfil,permisos, loading } = useAuthStore();
 
   if (loading) {
     return (
@@ -29,6 +29,11 @@ export default function ProtectedRoute({ children, requiredPermission }: Protect
       return <Navigate to="/no-autorizado" replace />;
     }
   }
+
+  if (perfil?.passwordTemporal && location.pathname !== "/reset-password") {
+  return <Navigate to="/reset-password" replace />;
+}
+
 
   return <>{children}</>;
 }
