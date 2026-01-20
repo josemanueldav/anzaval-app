@@ -65,8 +65,8 @@ export default function AdminUsersNew() {
             cliente_id,
             activo
           )
-          .eq("activo", true)
-        `);
+        `)
+        .eq("activo", true);
 
       if (error || !usuariosBase) {
         setUsuarios([]);
@@ -188,7 +188,9 @@ export default function AdminUsersNew() {
   }
 
   alert("Usuario desactivado correctamente");
-  //onClose();
+  setModalOpen(false);
+  setUsuarioEditar(null);
+  await cargarUsuarios();
 };
 
 
