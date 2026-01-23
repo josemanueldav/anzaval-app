@@ -1,6 +1,6 @@
 export const breadcrumbNames: Record<string, string> = {
   dashboard: "Dashboard",
-  productos: "Productos",
+  productos: "Activos",
   clientes: "Clientes",
   reportes: "Reportes",
   admin: "Administración",

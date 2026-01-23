@@ -7,13 +7,13 @@ export function MainMenu() {
   const { permisos } = useAuthPermissions();
 
   const items = [
-    { label: "Productos", to: "/productos" }, // todos
+    { label: "Activos", to: "/productos" }, // todos
     hasPermission(permisos, "ver_dashboard") && {
       label: "Dashboard",
       to: "/dashboard",
     },
     hasPermission(permisos, "gestionar_clientes") && {
-      label: "Clientes",
+      label: "Proyectos",
       to: "/clientes",
     },
     hasPermission(permisos, "gestionar_usuarios") && {

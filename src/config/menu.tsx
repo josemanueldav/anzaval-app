@@ -9,14 +9,14 @@ export const menuItems = [
   },
 
   {
-    label: "Productos",
+    label: "Activos",
     icon: <Package size={18} />,
     path: "/productos",
     permiso: null, // cualquier usuario logueado
   },
 
   {
-    label: "Clientes",
+    label: "Proyectos",
     icon: <ClipboardList size={18} />,
     path: "/clientes",
     permiso: "gestionar_clientes",

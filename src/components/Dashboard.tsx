@@ -64,7 +64,7 @@ function Dashboard() {
     <div className="p-6 space-y-6">
       {/* ---- Tarjetas métricas ---- */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {["Productos", "Categorías", "Stock bajo", "Última actualización"].map(
+        {["Activos", "Categorías", "Stock bajo", "Última actualización"].map(
           (titulo, idx) => (
             <motion.div
               key={idx}
@@ -90,7 +90,7 @@ function Dashboard() {
                   : idx === 1
                   ? "Tipos de producto"
                   : idx === 2
-                  ? "Productos con alerta"
+                  ? "Activos con alerta"
                   : "Datos sincronizados"}
               </p>
             </motion.div>
@@ -109,10 +109,10 @@ function Dashboard() {
         <h2 className="text-lg font-semibold mb-3">Accesos rápidos</h2>
         <div className="flex gap-4">
           <button className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl flex-1">
-            Gestionar Productos
+            Gestionar Activos
           </button>
           <button className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-xl flex-1">
-            Agregar Producto
+            Agregar Activo
           </button>
         </div>
       </motion.div>

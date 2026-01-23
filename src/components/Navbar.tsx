@@ -50,10 +50,10 @@ export default function Navbar() {
                 📊 Dashboard
               </Link>
               <Link to="/productos" className="hover:text-blue-400 transition">
-                📦 Productos
+                📦 Activos
               </Link>
               <Link to="/clientes" className="hover:text-blue-400 transition">
-                🏢 Clientes
+                🏢 Proyectos
               </Link>
               <Link to="/usuarios" className="hover:text-blue-400 transition">
                 👥 Usuarios
@@ -111,7 +111,7 @@ export default function Navbar() {
               className="block hover:text-blue-400 transition"
               onClick={() => setIsOpen(false)}
             >
-              🏢 Clientes
+              🏢 Proyectos
             </Link>
             <Link
               to="/usuarios"
